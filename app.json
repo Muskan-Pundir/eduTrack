@@ -1,29 +1,32 @@
 {
   "expo": {
-    "name": "edutrack-frontend",
-    "slug": "edutrack-frontend",
+    "name": "eduTrack",
+    "slug": "eduTrack",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./src/assets/favicon.png",
     "scheme": "edutrackfrontend",
     "userInterfaceStyle": "automatic",
-    "newArchEnabled": false,
+    "newArchEnabled": true,
     "ios": {
       "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
-        "foregroundImage": "./assets/images/android-icon-foreground.png",
-        "backgroundImage": "./assets/images/android-icon-background.png",
-        "monochromeImage": "./assets/images/android-icon-monochrome.png"
+        "foregroundImage": "./src/assets/favicon.png",
+        "backgroundImage": "./src/assets/favicon.png",
+        "monochromeImage": "./src/assets/favicon.png"
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false
     },
     "web": {
       "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "favicon": "./src/assets/favicon.png",
+      "name": "eduTrack",
+      "shortName": "eduTrack",
+      "jsEngine": "jsc"
     },
     "plugins": [
       "expo-router",
@@ -40,9 +43,9 @@
         }
       ]
     ],
-   "experiments": {
-  "typedRoutes": true,
-  "reactCompiler": false
-}
+    "experiments": {
+      "typedRoutes": true,
+      "reactCompiler": false
+    }
   }
 }

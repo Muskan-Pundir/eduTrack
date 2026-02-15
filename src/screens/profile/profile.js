@@ -9,12 +9,12 @@ import {
   Alert,
 } from "react-native";
 import { AuthContext } from "../../context/authContext";
-import { updateUserProfile } from "../../services/api";
+import { updateUser } from "../../services/userService";
 import { MaterialIcons } from "@expo/vector-icons";
 import { COLORS } from "../../constants/color";
 
 export default function Profile({ navigation }) {
-  const { user } = useContext(AuthContext);
+  const { user, setUser } = useContext(AuthContext);
   const [isEditing, setIsEditing] = useState(false);
   const [name, setName] = useState(user?.name || "");
   const [phone, setPhone] = useState(user?.phone || "");
@@ -23,11 +23,15 @@ export default function Profile({ navigation }) {
   const handleSave = async () => {
     setLoading(true);
     try {
-      const response = await updateUserProfile({ name, phone });
+      const updatedUser = await updateUser(user.id, {
+        name,
+        phone,
+      });
 
-      if (response?.data) {
+      if (updatedUser) {
         Alert.alert("Success", "Profile updated successfully!");
         setIsEditing(false);
+        setUser(updatedUser);   // 👈 direct use karo
       }
     } catch (error) {
       console.error("Update error:", error);
@@ -36,6 +40,7 @@ export default function Profile({ navigation }) {
       setLoading(false);
     }
   };
+
 
   return (
     <View style={styles.container}>

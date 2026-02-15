@@ -13,11 +13,11 @@ export default function Welcome({ navigation }) {
         <View style={styles.container}>
 
             {/* Illustration */}
-            {/* <Image
-        source={require("../../assets/welcome.png")}
+            <Image
+        source={require("../../assets/images/logoimg.png")}
         style={styles.image}
         resizeMode="contain"
-      /> */}
+      />
 
             {/* Title */}
             <Text style={styles.title}>Welcome!</Text>
@@ -55,9 +55,9 @@ const styles = StyleSheet.create({
         padding: 20,
     },
     image: {
-        width: 250,
-        height: 250,
-        marginBottom: 30,
+        width: 200,
+        height: 180,
+        marginBottom: 10,
     },
     title: {
         fontSize: 28,

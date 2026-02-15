@@ -5,17 +5,21 @@ import { COLORS } from "../../constants/color";
 
 export default function Settings({ navigation }) {
   const settingsOptions = [
-    { id: 1, title: "Notifications", icon: "notifications" },
-    { id: 2, title: "Privacy & Security", icon: "security" },
-    { id: 3, title: "Language", icon: "language" },
-    { id: 4, title: "Help & Support", icon: "help" },
-    { id: 5, title: "About", icon: "info" },
+    { id: 1, title: "Notifications", icon: "notifications", screen: "Notification" },
+    { id: 2, title: "Privacy & Security", icon: "security", screen: "PrivacySecurity" },
+    { id: 3, title: "Language", icon: "language", screen: "Language" },
+    { id: 4, title: "Help & Support", icon: "help", screen: "HelpSupport" },
+    { id: 5, title: "About", icon: "info", screen: "About" }
   ];
 
   return (
     <ScrollView style={styles.container}>
       {settingsOptions.map((option) => (
-        <TouchableOpacity key={option.id} style={styles.optionCard}>
+        <TouchableOpacity
+          key={option.id}
+          style={styles.optionCard}
+          onPress={() => option.screen && navigation.navigate(option.screen)}
+        >
           <MaterialIcons name={option.icon} size={24} color={COLORS.primary} />
           <Text style={styles.optionText}>{option.title}</Text>
           <MaterialIcons name="chevron-right" size={24} color={COLORS.secondary} />

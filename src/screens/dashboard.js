@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import {
   View,
   Text,
@@ -12,38 +12,14 @@ import { AuthContext } from "../context/authContext";
 import { logout } from "../services/api";
 import { MaterialIcons, FontAwesome5, Ionicons } from "@expo/vector-icons";
 import { COLORS } from "../constants/color";
+import LogoutModal from "../modals/logoutModal";
 
 export default function Dashboard({ navigation }) {
   const { user, logout: authLogout } = useContext(AuthContext);
-
-  const handleLogout = () => {
-    Alert.alert(
-      "Logout",
-      "Are you sure you want to logout?",
-      [
-        {
-          text: "Cancel",
-          style: "cancel",
-        },
-        {
-          text: "Logout",
-          style: "destructive",
-          onPress: async () => {
-            try {
-              await logout();
-              await authLogout();
-              Alert.alert("Success", "Logged out successfully!");
-            } catch (error) {
-              console.error("Logout error:", error);
-              // Logout locally even if API fails
-              await authLogout();
-            }
-          },
-        },
-      ],
-      { cancelable: false }
-    );
-  };
+  const [logoutVisible, setLogoutVisible] = useState(false);
+  const role = user?.role;
+ 
+ 
 
   const menuItems = [
     {
@@ -51,56 +27,78 @@ export default function Dashboard({ navigation }) {
       title: "Profile",
       subtitle: "View & Edit Profile",
       icon: "person",
-      iconType: "MaterialIcons",
       color: COLORS.primary,
       screen: "Profile",
+      roles: ["Teacher", "Student", "Parent", "Principal", "SuperAdmin"],
     },
     {
       id: 2,
       title: "Dashboard",
-      subtitle: "Analytics & Reports",
+      subtitle: "Analytics & Overview",
       icon: "dashboard",
-      iconType: "MaterialIcons",
       color: "#FF6B6B",
       screen: "RoleDashboardScreen",
+      roles: ["Principal","SuperAdmin"],
     },
     {
       id: 3,
       title: "Transactions",
       subtitle: "View all transactions",
       icon: "receipt-long",
-      iconType: "MaterialIcons",
       color: "#4ECDC4",
       screen: "Transaction",
+      roles: ["Parent", "Principal","SuperAdmin"],
     },
     {
       id: 4,
       title: "Reports",
-      subtitle: "Generate reports",
+      subtitle: "Generate & Export Reports",
       icon: "bar-chart",
-      iconType: "MaterialIcons",
       color: "#95E1D3",
       screen: "Reports",
+      roles: ["Teacher", "Principal","SuperAdmin"],
     },
     {
       id: 5,
-      title: "Settings",
-      subtitle: "App preferences",
-      icon: "settings",
-      iconType: "MaterialIcons",
+      title: "Attendance Management",
+      subtitle: "Manage student attendance",
+      icon: "fact-check",
       color: "#F38181",
-      screen: "Settings",
+      screen: "AttendanceManagement",
+      roles: ["Teacher", "Principal","SuperAdmin"],
     },
     {
       id: 6,
-      title: "Support",
-      subtitle: "Help & Support",
-      icon: "support-agent",
-      iconType: "MaterialIcons",
-      color: "#AA96DA",
-      screen: "Support",
+      title: "Fee Management",
+      subtitle: "Manage student fees",
+      icon: "payments",
+      color: "#FFB74D",
+      screen: "FeeManagement",
+      roles: ["Principal","SuperAdmin"],
+    },
+    {
+      id: 7,
+      title: "Assignments",
+      subtitle: "Homework & Assignments",
+      icon: "assignment",
+      color: "#81C784",
+      screen: "AssignmentModule",
+      roles: ["Teacher", "Student"],
+    },
+    {
+      id: 8,
+      title: "Settings",
+      subtitle: "App Preferences",
+      icon: "settings",
+      color: "#BA68C8",
+      screen: "Settings",
+      roles: ["Teacher", "Student", "Parent", "Principal","SuperAdmin"],
     },
   ];
+
+  const filteredMenu = menuItems.filter(item =>
+    item.roles.includes(role)
+  );
 
   const handleMenuPress = (screen) => {
     navigation.navigate(screen);
@@ -116,15 +114,16 @@ export default function Dashboard({ navigation }) {
           </View>
           <View style={styles.headerText}>
             <Text style={styles.greeting}>Welcome back,</Text>
-            <Text style={styles.userName}>{user?.email || "User"}</Text>
+            <Text style={styles.userName}>{user?.name || "User"}</Text>
           </View>
         </View>
         <TouchableOpacity
           style={styles.logoutButton}
-          onPress={handleLogout}
+          onPress={() => setLogoutVisible(true)}
         >
           <MaterialIcons name="logout" size={24} color={COLORS.white} />
         </TouchableOpacity>
+
       </View>
 
       {/* Menu Grid */}
@@ -133,7 +132,7 @@ export default function Dashboard({ navigation }) {
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.menuGrid}>
-          {menuItems.map((item) => (
+          {filteredMenu.map((item) => (
             <TouchableOpacity
               key={item.id}
               style={styles.menuCard}
@@ -159,9 +158,9 @@ export default function Dashboard({ navigation }) {
         </View>
 
         {/* Quick Actions */}
-        <View style={styles.quickActionsContainer}>
+        {/* <View style={styles.quickActionsContainer}>
           <Text style={styles.sectionTitle}>Quick Actions</Text>
-          
+
           <TouchableOpacity
             style={styles.quickActionButton}
             onPress={() => navigation.navigate("Profile")}
@@ -179,10 +178,26 @@ export default function Dashboard({ navigation }) {
             <Text style={styles.quickActionText}>Settings</Text>
             <MaterialIcons name="chevron-right" size={24} color={COLORS.secondary} />
           </TouchableOpacity>
-        </View>
+        </View> */}
       </ScrollView>
+      <LogoutModal
+        visible={logoutVisible}
+        onCancel={() => setLogoutVisible(false)}
+        onConfirm={async () => {
+          try {
+            await logout();
+            await authLogout();
+          } catch (error) {
+            await authLogout();
+          }
+          setLogoutVisible(false);
+        }}
+      />
+
     </View>
+
   );
+
 }
 
 const styles = StyleSheet.create({

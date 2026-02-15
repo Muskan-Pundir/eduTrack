@@ -9,6 +9,7 @@ import {
   Platform,
   ScrollView,
   Alert,
+  Image
 } from "react-native";
 import { AuthContext } from "../../context/authContext";
 import { FontAwesome, AntDesign } from "@expo/vector-icons";
@@ -42,12 +43,9 @@ export default function Login({ navigation }) {
 
       // Check if API successful
       if (data && data.token) {
-        // Save to AuthContext & AsyncStorage
-        // Yeh automatically Dashboard pe navigate kar dega
+        
         await authLogin(data.token, email, data.user);
 
-        // Navigation automatically ho jayega through conditional rendering
-        // Manual navigation.replace() ki zaroorat nahi
 
         console.log("Login successful, navigation will happen automatically");
       } else {
@@ -74,6 +72,11 @@ export default function Login({ navigation }) {
         <View style={styles.innerContainer}>
           {/* Heading */}
           <View style={styles.header}>
+            <Image
+              source={require("../../assets/images/logoimg.png")}
+              style={styles.image}
+              resizeMode="contain"
+            />
             <Text style={styles.title}>Hello</Text>
             <Text style={styles.subtitle}>
               Welcome back you've been missed!
@@ -132,11 +135,11 @@ export default function Login({ navigation }) {
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.socialButton}>
-              <AntDesign name="apple1" size={24} color={COLORS.black} />
+              <AntDesign name="linkedin" size={24} color="#1877F2"/>
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.socialButton}>
-              <AntDesign name="google" size={24} color="#DB4437" />
+              <AntDesign name="google" size={24} color="#1877F2" />
             </TouchableOpacity>
           </View>
 
@@ -158,6 +161,11 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: COLORS.white,
   },
+  image: {
+    width: 200,
+    height: 180,
+    marginBottom: 10,
+  },
   scrollContent: {
     flexGrow: 1,
     justifyContent: "center",
@@ -172,7 +180,7 @@ const styles = StyleSheet.create({
   },
   header: {
     alignItems: "center",
-    marginBottom: 32,
+    marginBottom: 20,
   },
   title: {
     fontSize: 28,

@@ -1,24 +1,46 @@
 import React, { useState } from "react";
-import { View, TextInput, TouchableOpacity, Text, Alert, StyleSheet, Image, KeyboardAvoidingView, Platform, ScrollView } from "react-native";
-import { forgotPassword } from "../../services/authServices";
+import {
+    View,
+    TextInput,
+    TouchableOpacity,
+    Text,
+    Alert,
+    StyleSheet,
+    Image,
+    KeyboardAvoidingView,
+    Platform,
+    ScrollView,
+} from "react-native";
+import { changePassword } from "../../services/authServices";
 import { COLORS } from "../../constants/color";
 
-export default function ForgotPassword({ navigation }) {
-    const [email, setEmail] = useState("");
+export default function ChangePassword({ navigation }) {
+    const [currentPassword, setCurrentPassword] = useState("");
     const [newPassword, setNewPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
 
-    const handleReset = async () => {
+    const handleChangePassword = async () => {
+        if (!currentPassword || !newPassword || !confirmPassword) {
+            Alert.alert("Error", "All fields are required");
+            return;
+        }
+
+        if (newPassword !== confirmPassword) {
+            Alert.alert("Error", "Passwords do not match");
+            return;
+        }
+
         try {
-            const data = await forgotPassword({
-                email,
+            const data = await changePassword({
+                currentPassword,
                 newPassword,
             });
 
             Alert.alert("Success", data.message);
-            navigation.navigate("Login");
+            navigation.goBack();
 
         } catch (error) {
-            Alert.alert("Error", error.message || "Reset failed");
+            Alert.alert("Error", error.message || "Password change failed");
         }
     };
 
@@ -40,19 +62,18 @@ export default function ForgotPassword({ navigation }) {
                             style={styles.image}
                             resizeMode="contain"
                         />
-                        <Text style={styles.title}>Forgot Password</Text>
+                        <Text style={styles.title}>Change Password</Text>
                         <Text style={styles.subtitle}>
-                            Enter your email and set a new password
+                            Enter your old password and set a new one
                         </Text>
                     </View>
 
                     <TextInput
-                        placeholder="Enter Email"
-                        value={email}
-                        onChangeText={setEmail}
+                        placeholder="Old Password"
+                        secureTextEntry
+                        value={currentPassword}
+                        onChangeText={setCurrentPassword}
                         style={styles.input}
-                        autoCapitalize="none"
-                        keyboardType="email-address"
                     />
 
                     <TextInput
@@ -63,23 +84,34 @@ export default function ForgotPassword({ navigation }) {
                         style={styles.input}
                     />
 
-                    <TouchableOpacity style={styles.button} onPress={handleReset}>
-                        <Text style={styles.buttonText}>Reset Password</Text>
+                    <TextInput
+                        placeholder="Confirm New Password"
+                        secureTextEntry
+                        value={confirmPassword}
+                        onChangeText={setConfirmPassword}
+                        style={styles.input}
+                    />
+
+                    <TouchableOpacity
+                        style={styles.button}
+                        onPress={handleChangePassword}
+                    >
+                        <Text style={styles.buttonText}>Update Password</Text>
                     </TouchableOpacity>
 
                     <TouchableOpacity
                         style={styles.backToLogin}
-                        onPress={() => navigation.navigate("Login")}
+                        onPress={() => navigation.goBack()}
                     >
-                        <Text style={styles.backText}>Back to Login</Text>
+                        <Text style={styles.backText}>Back</Text>
                     </TouchableOpacity>
 
                 </View>
             </ScrollView>
         </KeyboardAvoidingView>
-
     );
 }
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -90,7 +122,6 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         minHeight: "100%",
     },
-
     header: {
         alignItems: "center",
         marginBottom: 20,
@@ -99,7 +130,6 @@ const styles = StyleSheet.create({
         width: 200,
         height: 180,
         marginBottom: 10,
-
     },
     innerContainer: {
         paddingHorizontal: 24,
@@ -113,15 +143,11 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         color: COLORS.text,
     },
-
     subtitle: {
         fontSize: 16,
         color: COLORS.secondary,
         marginTop: 8,
         textAlign: "center",
-    },
-    inputContainer: {
-        marginBottom: 20,
     },
     input: {
         borderWidth: 1,
@@ -133,7 +159,6 @@ const styles = StyleSheet.create({
         marginBottom: 16,
         color: COLORS.text,
     },
-
     button: {
         backgroundColor: COLORS.primary,
         padding: 16,
@@ -141,18 +166,15 @@ const styles = StyleSheet.create({
         alignItems: "center",
         marginTop: 8,
     },
-
     buttonText: {
         color: COLORS.white,
         fontWeight: "bold",
         fontSize: 18,
     },
-
     backToLogin: {
         marginTop: 20,
         alignItems: "center",
     },
-
     backText: {
         color: COLORS.accent,
         fontSize: 14,

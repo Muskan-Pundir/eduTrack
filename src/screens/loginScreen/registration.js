@@ -9,6 +9,7 @@ import {
   StyleSheet,
   KeyboardAvoidingView,
   Platform,
+  Image
 } from "react-native";
 import { router } from "expo-router";
 import API from "../../services/api";
@@ -63,7 +64,13 @@ export default function Registration({ navigation }) {
       >
         <View style={styles.innerContainer}>
           {/* Header */}
+
           <View style={styles.header}>
+            <Image
+              source={require("../../assets/images/logoimg.png")}
+              style={styles.image}
+              resizeMode="contain"
+            />
             <Text style={styles.title}>Create Account</Text>
             <Text style={styles.subtitle}>Sign up to get started</Text>
           </View>
@@ -139,7 +146,7 @@ export default function Registration({ navigation }) {
           {/* Login Link */}
           <View style={styles.loginContainer}>
             <Text style={styles.loginText}>Already have an account? </Text>
-            <TouchableOpacity onPress={() => router.push("/login")}>
+            <TouchableOpacity onPress={() => navigation.navigate("Login")}>
               <Text style={styles.loginLink}>Login</Text>
             </TouchableOpacity>
           </View>
@@ -168,7 +175,7 @@ const styles = StyleSheet.create({
   },
   header: {
     alignItems: "center",
-    marginBottom: 32,
+    marginBottom: 20,
   },
   title: {
     fontSize: 28,
@@ -183,6 +190,12 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     marginBottom: 20,
+  },
+  image: {
+    width: 200,
+    height: 180,
+    marginBottom: 10,
+
   },
   input: {
     borderWidth: 1,
